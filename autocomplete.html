@@ -1,0 +1,206 @@
+<html>
+<head>
+    <title>live train status</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        var x = "", i;
+        $(document).ready(function () {
+            $("#findData").click(function () {
+                trainNo = $('#trainNo').val();
+                $.ajax({
+                    method: "GET",
+                    crossDomain: true,
+                    url: "https://indianrailapi.com/api/v2/AutoCompleteTrainInformation/apikey/a1a72eb5ca2a37a39fe3900cdb7c5c0b/TrainNumberOrName/" + trainNo + "/",
+                    dataType: "json",
+                    async: true,
+                    success: function (data) {
+                        if (data.Trains[0] == null) {
+                            warning1 = "NO TRAIN RUNNING ON THIS DATE";
+                            $("#demo").empty();
+                            document.getElementById("info1").innerHTML = warning1;
+                            $(document.getElementById("info1")).addClass("info1");
+
+                        }
+                        else {
+                            $("#info1").empty();
+                            x = "<table><tr><th>TRAIN NUMBER</th><th>TRAIN NAME</th><th>SOURCE STATION</th><th>DEPARTURE</th><th>DESTINATION STATION</th><th>ARRIVAL</th></tr>"
+                            for (i in data.Trains) {
+                                x += "<tr><td>" + data.Trains[i].TrainNo + "</td><td>"
+                                    + data.Trains[i].TrainName + "</td><td>"
+                                    + data.Trains[i].Source.Code + "</td><td>"
+                                    + data.Trains[i].Source.Arrival + "</td><td>"
+                                    + data.Trains[i].Destination.Code + "</td><td>"
+                                    + data.Trains[i].Destination.Arrival + "</td>"
+                            }
+                            x += "</table>"
+                            $("#demo").append(x);
+                            document.getElementById("demo").innerHTML = x;
+                        }
+                    },
+                    error: function () {
+                        infoContent = "<div>Sorry, data is not coming through. Refresh and try again.</div>";
+                    }
+                });
+            });
+        });
+    </script>
+    <style>
+        table {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 5%;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 15px 28px;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        button {
+            border: 1px solid green;
+        }
+
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            background-color: #f91942;
+            color: white;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .heading {
+            text-align: center;
+            font-size: 70px;
+            font-family: inherit;
+            margin-top: 5%;
+        }
+
+        .row2 {
+            margin-top: 5%;
+        }
+
+        .button {
+            height: 32px;
+            width: 82px;
+            background-color: #f91942;
+            border-radius: 33px;
+            color: white;
+            border: 1px solid #f91942;
+            outline: none;
+        }
+
+        #trainNo {
+            border: 1px solid #f91942;
+            border-left: 2px solid #f91942
+        }
+
+        #demo {
+            margin-top: 3%;
+        }
+
+        .info1 {
+            margin-top: 10%;
+            background-color: #ebf6e0;
+            padding: 30px;
+            border-left: 10px solid red;
+        }
+
+        .main-div {
+            padding: 0;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        .first-div {
+            padding-left: 25px;
+        }
+
+        .navbar-brand {
+            padding: 0;
+        }
+
+        .navbar-inverse .navbar-nav>li>a {
+            color: white;
+            font-size: 19px;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        .list {
+            margin-left: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-div">
+        <nav class="navbar navbar-inverse" style="border-radius: 0;">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="mainPage.html"><img class="navbar-brand" src="TrainLogoComp.png"  style=height:45px></a>
+            </div>
+            <div class="collapse navbar-collapse first-div" id="myNavbar">
+                <ul class="nav navbar-nav">
+                    <li><a class="list" href="liveTrain.html">Live Train Status</a></li>
+                    <li><a class="list" href="trainBwStation.html">Trains b/w Stations</a></li>
+                    <li><a class="list" href="autocomplete.html">Station Autocomplete</a></li>
+                    <li><a class="list" href="seatAvailability.html">Seat Availability</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="row row1">
+                <div class="col-xs-12 heading">
+                    Spot Your Train
+                </div>
+            </div>
+            <div class="row row2">
+                <div class="col-xs-offset-4 col-xs-3 ">
+                    <input type="text" class="form-control" id="trainNo" placeholder="Train No Or Station Abbr">
+                </div>
+                <div class="col-xs-2">
+                    <button class="button" id="findData">Find</button>
+                </div>
+            </div>
+            <div id="info1">
+
+            </div>
+
+            <div id="demo" class=" text-center">
+            </div>
+            <div id="warning" class="text-center">
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
